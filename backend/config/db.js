@@ -1,13 +1,22 @@
-const mysql = require('mysql2/promise');
-require('dotenv').config();
+const mysql = require("mysql2/promise");
+require("dotenv").config();
 
 const pool = mysql.createPool({
-  host:     process.env.DB_HOST || 'localhost',
-  user:     process.env.DB_USER || 'bisuteria',
-  password: process.env.DB_PASS || '123456',
-  database: process.env.DB_NAME || 'tienda_bisuteria',
+  host: process.env.DB_HOST || "localhost",
+  port: process.env.DB_PORT || 3306,
+  user: process.env.DB_USER || "bisuteria",
+  password: process.env.DB_PASS || "123456",
+  database: process.env.DB_NAME || "tienda_bisuteria",
+
+  ssl: process.env.DB_SSL === "true"
+    ? {
+        rejectUnauthorized: false
+      }
+    : undefined,
+
   waitForConnections: true,
   connectionLimit: 10,
+  queueLimit: 0,
 });
 
 module.exports = pool;
