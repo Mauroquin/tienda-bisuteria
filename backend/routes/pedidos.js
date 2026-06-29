@@ -15,6 +15,9 @@ router.post('/', verificarToken, async (req, res) => {
       !cliente?.direccion     || !cliente?.ciudad)
     return res.status(400).json({ ok: false, mensaje: 'Faltan datos del cliente' });
 
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cliente.correo))
+    return res.status(400).json({ ok: false, mensaje: 'Correo electrónico inválido' });
+
   const conn = await db.getConnection();
   try {
     await conn.beginTransaction();
@@ -57,10 +60,10 @@ router.post('/', verificarToken, async (req, res) => {
       );
     }
 
-    // 4. Insertar pago (sin método por ahora)
+    // 4. Insertar pago
     await conn.query(
-      `INSERT INTO pagos (pedido_id, estado) VALUES (?, 'pendiente')`,
-      [pedido_id]
+      `INSERT INTO pagos (pedido_id, estado, metodo) VALUES (?, 'pendiente', ?)`,
+      [pedido_id, pago?.metodo || null]
     );
 
     await conn.commit();
@@ -78,7 +81,8 @@ router.post('/', verificarToken, async (req, res) => {
 %0A💰 Total: $${total}%0A
 📌 Estado: pendiente`;
 
-    const whatsapp_url = `https://wa.me/573146178265?text=${mensaje}`;
+    const whatsapp_num = process.env.WHATSAPP_BUSINESS || '573117766147';
+    const whatsapp_url = `https://wa.me/${whatsapp_num}?text=${mensaje}`;
 
     res.status(201).json({
       ok: true,
@@ -151,6 +155,29 @@ router.get('/:id', verificarToken, async (req, res) => {
       }
     });
 
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ ok: false, mensaje: err.message });
+  }
+});
+
+// GET /pedidos/:id/seguimiento — historial de seguimiento
+router.get('/:id/seguimiento', verificarToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [pedido] = await db.query(
+      `SELECT estado, creado_at FROM pedidos WHERE id = ?`,
+      [id]
+    );
+    if (!pedido.length)
+      return res.status(404).json({ ok: false, mensaje: 'Pedido no encontrado' });
+
+    const timeline = [{
+      estado: pedido[0].estado,
+      fecha: pedido[0].creado_at
+    }];
+
+    res.json({ ok: true, data: timeline });
   } catch (err) {
     console.error(err);
     res.status(500).json({ ok: false, mensaje: err.message });

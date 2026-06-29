@@ -5,7 +5,10 @@ const path = require('path');
 
 const app = express();
 
-app.use(cors({ origin: 'http://localhost:3000' }));
+const corsOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(',').map(s => s.trim())
+  : ['http://localhost:3000'];
+app.use(cors({ origin: corsOrigins }));
 app.use(express.json());
 
 // 📌 RUTAS

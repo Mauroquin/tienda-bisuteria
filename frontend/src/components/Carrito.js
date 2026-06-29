@@ -4,7 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 
-const WHATSAPP_NUMBER = '3117766147';
+// Mismo número del negocio definido en backend/.env (WHATSAPP_BUSINESS)
+const WHATSAPP_NUMBER = '573146178265';
 
 const clienteVacio = {
   nombre_completo: '',
@@ -223,6 +224,7 @@ export default function Carrito() {
                     {[
                       { icon: '📱', label: 'Nequi', value: 'nequi', desc: 'Pago por Nequi' },
                       { icon: '📲', label: 'Daviplata', value: 'daviplata', desc: 'Pago por Daviplata' },
+                      { icon: '💳', label: 'BREBRE', value: 'brebre', desc: 'Pago por BREBRE' },
                     ].map(m => (
                       <div
                         key={m.value}

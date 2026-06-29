@@ -239,6 +239,8 @@ export default function Admin() {
 
   // Polling cada 30s para detectar pedidos nuevos
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
     pollingRef.current = setInterval(() => cargarPedidos(true), 30000);
     return () => clearInterval(pollingRef.current);
   }, [cargarPedidos]);
@@ -442,9 +444,8 @@ export default function Admin() {
 
   /* ── Logout ── */
   const handleLogout = () => {
-    sessionStorage.removeItem('adminAuth');
     localStorage.removeItem('token');
-    navigate('/admin-login');
+    navigate('/login');
   };
 
   /* ── Métricas ── */

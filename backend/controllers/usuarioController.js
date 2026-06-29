@@ -4,8 +4,12 @@ const jwt = require('jsonwebtoken');
 exports.registro = async (req, res) => {
   try {
     const { nombre, email, password } = req.body;
-    if (!nombre || !email || !password)
-      return res.status(400).json({ ok: false, mensaje: 'Todos los campos son requeridos' });
+    if (!nombre || !nombre.trim())
+      return res.status(400).json({ ok: false, mensaje: 'El nombre es requerido' });
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+      return res.status(400).json({ ok: false, mensaje: 'Email inválido' });
+    if (!password || password.length < 6)
+      return res.status(400).json({ ok: false, mensaje: 'La contraseña debe tener al menos 6 caracteres' });
 
     const existe = await Usuario.buscarPorEmail(email);
     if (existe)

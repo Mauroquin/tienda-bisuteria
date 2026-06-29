@@ -1,5 +1,7 @@
 const Producto = require('../models/Producto');
 
+const baseUrl = process.env.BASE_URL || '';
+
 exports.getAll = async (req, res) => {
   try {
     const productos = await Producto.getAll(req.query);
@@ -21,8 +23,14 @@ exports.getById = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
+    const { nombre, precio } = req.body;
+    if (!nombre || !nombre.trim())
+      return res.status(400).json({ ok: false, mensaje: 'El nombre del producto es requerido' });
+    if (precio === undefined || precio === '' || Number(precio) < 0)
+      return res.status(400).json({ ok: false, mensaje: 'Precio inválido' });
+
     const imagen_url = req.file
-      ? `http://localhost:5000/uploads/${req.file.filename}`
+      ? `${baseUrl}/uploads/${req.file.filename}`
       : null;
     const id = await Producto.create({ ...req.body, imagen_url });
     res.status(201).json({ ok: true, id });
@@ -34,8 +42,14 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
   try {
     const { id } = req.params;
+    const { nombre, precio } = req.body;
+    if (!nombre || !nombre.trim())
+      return res.status(400).json({ ok: false, mensaje: 'El nombre del producto es requerido' });
+    if (precio !== undefined && (precio === '' || Number(precio) < 0))
+      return res.status(400).json({ ok: false, mensaje: 'Precio inválido' });
+
     const imagen_url = req.file
-      ? `http://localhost:5000/uploads/${req.file.filename}`
+      ? `${baseUrl}/uploads/${req.file.filename}`
       : null;
 
     await Producto.update(id, { ...req.body, imagen_url });

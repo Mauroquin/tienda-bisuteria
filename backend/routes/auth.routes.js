@@ -7,6 +7,10 @@ const db = require("../config/db");
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+      return res.status(400).json({ ok: false, mensaje: 'Email inválido' });
+    if (!password)
+      return res.status(400).json({ ok: false, mensaje: 'Contraseña requerida' });
     
     const [results] = await db.query(
       "SELECT * FROM usuarios WHERE email = ?", 
