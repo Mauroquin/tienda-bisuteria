@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS categorias (
     id             INT            NOT NULL AUTO_INCREMENT,
     nombre         VARCHAR(255)   NOT NULL,
     descripcion    TEXT           NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_categoria_nombre (nombre)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS productos (
@@ -78,8 +79,8 @@ CREATE TABLE IF NOT EXISTS pagos (
     FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Seed categories
-INSERT INTO categorias (nombre, descripcion) VALUES
+-- Seed categories (idempotente gracias a UNIQUE + IGNORE)
+INSERT IGNORE INTO categorias (nombre, descripcion) VALUES
   ('PULSERAS', 'Pulseras artesanales'),
   ('ARETES', 'Aretes hechos a mano'),
   ('COLLARES', 'Collares artesanales'),

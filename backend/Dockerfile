@@ -7,6 +7,8 @@ RUN npm ci --only=production
 
 COPY . .
 
+RUN mkdir -p /app/uploads
+
 EXPOSE 5000
 
-CMD ["node", "server.js"]
+CMD node scripts/migrate.js && node server.js
