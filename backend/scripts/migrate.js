@@ -55,7 +55,7 @@ async function migrate() {
 }
   }
 
-  const sqlPath = path.join(__dirname, '../../db/init.sql');
+  const sqlPath = path.join(__dirname, '../db/init.sql');
   if (!fs.existsSync(sqlPath)) {
     console.log('⚠️  init.sql no encontrado, saltando migración');
     await connection.end();
