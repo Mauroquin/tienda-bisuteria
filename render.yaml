@@ -23,6 +23,12 @@ services:
         fromDatabase:
           name: aura-mysql
           property: database
+      - key: DB_PORT
+        fromDatabase:
+          name: aura-mysql
+          property: port
+      - key: DB_SSL
+        value: "true"
       - key: JWT_SECRET
         generateValue: true
       - key: WHATSAPP_BUSINESS

@@ -23,6 +23,14 @@ async function migrate() {
   connectTimeout: 10000,
 };
 
+  console.log("🔍 DB config:", {
+    host: config.host,
+    port: config.port,
+    user: config.user,
+    database: config.database,
+    ssl: config.ssl ? "enabled" : "disabled",
+  });
+
   let connection;
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
@@ -30,13 +38,19 @@ async function migrate() {
       console.log('✅ Conectado a MySQL');
       break;
     } catch (err) {
-      console.log(`⏳ Intento ${attempt}/${MAX_RETRIES} — MySQL no disponible: ${err.message}`);
-      if (attempt === MAX_RETRIES) {
-        console.error('❌ No se pudo conectar a MySQL después de', MAX_RETRIES, 'intentos');
-        process.exit(1);
-      }
-      await sleep(RETRY_DELAY);
-    }
+  console.error("Error completo:", err);
+
+  console.log(
+    `⏳ Intento ${attempt}/${MAX_RETRIES} — MySQL no disponible: ${err.message}`
+  );
+
+  if (attempt === MAX_RETRIES) {
+    console.error("❌ No se pudo conectar a MySQL después de", MAX_RETRIES, "intentos");
+    process.exit(1);
+  }
+
+  await sleep(RETRY_DELAY);
+}
   }
 
   const sqlPath = path.join(__dirname, '../../db/init.sql');
