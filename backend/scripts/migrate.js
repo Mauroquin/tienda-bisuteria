@@ -38,11 +38,13 @@ async function migrate() {
       console.log('✅ Conectado a MySQL');
       break;
     } catch (err) {
-  console.error("Error completo:", err);
-
-  console.log(
-    `⏳ Intento ${attempt}/${MAX_RETRIES} — MySQL no disponible: ${err.message}`
-  );
+  console.error("===== ERROR MYSQL =====");
+  console.error(err);
+  console.error("code:", err.code);
+  console.error("errno:", err.errno);
+  console.error("sqlState:", err.sqlState);
+  console.error("message:", err.message);
+  console.error("======================");
 
   if (attempt === MAX_RETRIES) {
     console.error("❌ No se pudo conectar a MySQL después de", MAX_RETRIES, "intentos");
