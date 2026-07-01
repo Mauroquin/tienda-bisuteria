@@ -13,6 +13,13 @@ const corsOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim())
   : ['http://localhost:3000'];
 
+console.log("CORS_ORIGIN =", process.env.CORS_ORIGIN);
+
+app.use(cors({
+  origin: corsOrigins,
+  credentials: true
+}));
+
 app.use(cors({
   origin: corsOrigins,
   credentials: true
