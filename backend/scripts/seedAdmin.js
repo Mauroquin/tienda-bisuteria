@@ -1,7 +1,8 @@
 require('dotenv').config();
 
 const bcrypt = require('bcryptjs');
-const db = require('./config/db');
+const path = require('path');
+const db = require(path.join(__dirname, '..', 'config', 'db'));
 
 async function crearAdmin() {
   try {
