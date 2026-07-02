@@ -12,4 +12,4 @@ RUN mkdir -p uploads
 
 EXPOSE 10000
 
-CMD ["sh", "-c", "node scripts/migrate.js && node server.js"]
+CMD ["sh", "-c", "node scripts/migrate.js && node scripts/seedAdmin.js && node server.js"]
